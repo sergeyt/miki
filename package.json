@@ -1,0 +1,36 @@
+{
+  "name": "mikki",
+  "version": "0.0.0",
+  "description": "Simple markdown wikki pages server",
+  "author": "Sergey Todyshev <stodyshev@gmail.com>",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sergeyt/mikki.git"
+  },
+  "keywords": [
+    "wikki",
+    "markdown"
+  ],
+  "contributors": [
+    "Sergey Todyshev <stodyshev@gmail.com>"
+  ],
+  "dependencies": {
+    "coffee-script": "~1.6.3",
+    "marked": "~0.3.0",
+    "highlight.js": "~8.0.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.7.1",
+    "grunt-coffeelint": "0.0.8",
+    "grunt-npm": "~0.0.2",
+    "grunt-bump": "~0.0.7",
+    "grunt-auto-release": "~0.0.2",
+    "grunt-cli": "~0.1.11"
+  },
+  "scripts": {
+    "lint": "grunt lint",
+    "test": "grunt test"
+  }
+}
