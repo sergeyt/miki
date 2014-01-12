@@ -1,5 +1,6 @@
 path = require 'path'
 express = require 'express'
+populateWikis = require './wikis'
 
 root = path.dirname __dirname
 
@@ -23,7 +24,7 @@ app.configure ->
 
 # handlers
 app.get '/', (req, res) ->
-	res.render 'index', {wikis: [{name: 'test', href: '/wiki/test'}] }
+	res.render 'index', {wikis: populateWikis()}
 
 # wiki page handler
 app.get /\/wiki\/.+/, (req, res) ->
