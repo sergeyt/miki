@@ -1,0 +1,15 @@
+doctype html
+html(lang="en")
+	include header
+	body
+		include nav
+		.row(style="padding: 8px")
+			.col-md-5
+				.panel.panel-default
+					.panel-heading
+						p.panel-title="Wikis"
+					.panel-body
+						ul.list-group
+							for wiki in wikis
+								li.list-group-item
+									a(href=wiki.href)=wiki.name
