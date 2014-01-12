@@ -1,3 +1,3 @@
-# mikki
+# miki
 
-Simple markdown wikki pages server
+Simple markdown wiki pages server
