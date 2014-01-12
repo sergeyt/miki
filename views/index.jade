@@ -4,7 +4,8 @@ html(lang="en")
 	body
 		include nav
 		.row(style="padding: 8px")
-			.col-md-5
+			// left panel - wiki list
+			.col-md-4
 				.panel.panel-default
 					.panel-heading
 						p.panel-title="Wikis"
@@ -13,3 +14,10 @@ html(lang="en")
 							for wiki in wikis
 								li.list-group-item
 									a(href=wiki.href)=wiki.name
+			// right panel - wiki preview
+			.col-md-8
+				.panel.panel-default
+					.panel-heading
+						p.panel-title="Preview"
+					.panel-body
+						| TBD
