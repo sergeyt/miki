@@ -12,12 +12,23 @@ html(lang="en")
 					.panel-body
 						ul.list-group
 							each wiki in wikis
-								li.list-group-item
+								li.list-group-item.wiki-item(data-name=wiki.name)
 									a(href=wiki.href)=wiki.name
 			// right panel - wiki preview
 			.col-md-8
 				.panel.panel-default
 					.panel-heading
 						p.panel-title="Preview"
-					.panel-body
-						| TBD
+					.panel-body.preview=""
+
+		script(type='text/javascript').
+			$(function(){
+				$('.wiki-item').click(function(){
+					$this = $(this);
+					var name = $this.data('name');
+					var url = "/preview/" + name;
+					$.get(url).then(function(html){
+							$('.preview').html(html);
+					});
+				});
+			});

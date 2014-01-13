@@ -30,24 +30,26 @@ renderTemplate = (content, cb) ->
 		cb null, html
 
 # renders given markdown file
-renderFile = (file, cb) ->
+renderFile = (file, wrap, cb) ->
 	fs.readFile file, {encoding: 'utf8'}, (err, md) ->
 		return cb err, null if err
 		# todo marked options to replace relative urls
 		marked md, (err, html) ->
 			return cb err, null if err
-			renderTemplate html, cb
+			return renderTemplate html, cb if wrap
+			# unwrapped markdown html
+			cb null, html
 
 # resolved and renders given wiki page
-renderPage = (wiki, page, cb) ->
+renderPage = (wiki, page, wrap, cb) ->
 	page.substr 1 if _.str.startsWith page, '/'
 	pattern = makePattern wiki, page
 	glob pattern, (err, files) ->
 		return cb err, null if err
-		renderFile files[0], cb
+		renderFile files[0], wrap, cb
 
 # wiki page handler
-module.exports = (page, cb) ->
+module.exports = (page, wrap, cb) ->
 	return cb "wiki page is not specified", null if not page
 
 	# resolve wiki
@@ -58,6 +60,6 @@ module.exports = (page, cb) ->
 
 	# render page
 	page = page.substr name.length
-	renderPage wiki, page, (err, html) ->
+	renderPage wiki, page, wrap, (err, html) ->
 		return cb err, null if err or not html
 		cb null, html

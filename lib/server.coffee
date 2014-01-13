@@ -28,12 +28,19 @@ app.get '/', (req, res) ->
 	res.render 'index', {wikis: populateWikis()}
 
 # wiki page handler
-app.get /\/wiki\/.+/, (req, res, next) ->
+app.get /\/wiki\/.+/, (req, res) ->
 	# remove prefix so need to handle it in page handler
 	page = req.path.replace /\/wiki\//, ''
-	pageHandler page, (err, html) ->
-		# todo send error
-		return next() if err or not html
+	pageHandler page, true, (err, html) ->
+		return res.send 500, {error: err} if err
+		res.send html
+
+# wiki preview page handler
+app.get /\/preview\/.+/, (req, res) ->
+	# remove prefix so need to handle it in page handler
+	page = req.path.replace /\/preview\//, ''
+	pageHandler page, false, (err, html) ->
+		return res.send 500, {error: err} if err
 		res.send html
 
 # error handler
