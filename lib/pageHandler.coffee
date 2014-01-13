@@ -16,10 +16,27 @@ marked.setOptions
 	langPrefix: 'hljs code '
 	highlight: highlight
 
+isAbsoluteUri = (uri) ->
+	(/^https?:\/\//i).test uri
+
+# custom renderer to handle link.href, image.src
+class Renderer extends marked.Renderer
+	constructor: (@opts) ->
+	link: (href, title, text) ->
+		super.link @fixhref href, title, text
+	image: (href, title, text) ->
+		super.image @fixhref href, title, text
+	fixhref: (href) ->
+		return href if isAbsoluteUri href
+		slash = if _.str.endsWith href, '/' then '' else '/'
+		"#{@opts.wiki.href}#{@opts.prefix}#{slash}#{href}"
+
 makePattern = (wiki, page) ->
 	dir = wiki.dir.replace /\\/g, '/'
 	page = '{index,readme}' if not page
-	"#{dir}/#{page}.{md,mkd,markdown}"
+	hasExt = (/\.(md|mkd|markdown)$/i).test(page)
+	suffix = if hasExt then '' else '.{md,mkd,markdown}'
+	"#{dir}/#{page}#{suffix}"
 
 # renders page template
 renderTemplate = (content, cb) ->
@@ -30,23 +47,25 @@ renderTemplate = (content, cb) ->
 		cb null, html
 
 # renders given markdown file
-renderFile = (file, wrap, cb) ->
+renderFile = (file, opts, cb) ->
 	fs.readFile file, {encoding: 'utf8'}, (err, md) ->
 		return cb err, null if err
-		# todo marked options to replace relative urls
-		marked md, (err, html) ->
+		dir = path.dirname file
+		opts.prefix = dir.substr opts.wiki.dir.length + 1
+		opts.prefix = '/' + opts.prefix if opts.prefix
+		marked md, {renderer: new Renderer(opts)}, (err, html) ->
 			return cb err, null if err
-			return renderTemplate html, cb if wrap
+			return renderTemplate html, cb if opts.wrap
 			# unwrapped markdown html
 			cb null, html
 
 # resolved and renders given wiki page
-renderPage = (wiki, page, wrap, cb) ->
+renderPage = (wiki, page, opts, cb) ->
 	page.substr 1 if _.str.startsWith page, '/'
 	pattern = makePattern wiki, page
 	glob pattern, (err, files) ->
 		return cb err, null if err
-		renderFile files[0], wrap, cb
+		renderFile files[0], opts, cb
 
 # wiki page handler
 module.exports = (page, wrap, cb) ->
@@ -60,6 +79,6 @@ module.exports = (page, wrap, cb) ->
 
 	# render page
 	page = page.substr name.length
-	renderPage wiki, page, wrap, (err, html) ->
+	renderPage wiki, page, {wrap:wrap, wiki: wiki}, (err, html) ->
 		return cb err, null if err or not html
 		cb null, html
