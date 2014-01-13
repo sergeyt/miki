@@ -5,7 +5,7 @@ html(lang="en")
 		include nav
 		.row(style="padding: 8px")
 			// left panel - wiki list
-			.col-md-4
+			.col-md-3
 				.panel.panel-default
 					.panel-heading
 						p.panel-title="Wikis"
@@ -15,7 +15,7 @@ html(lang="en")
 								li.list-group-item.wiki-item(data-name=wiki.name)
 									a(href=wiki.href)=wiki.name
 			// right panel - wiki preview
-			.col-md-8
+			.col-md-9
 				.panel.panel-default
 					.panel-heading
 						p.panel-title="Preview"
@@ -23,12 +23,20 @@ html(lang="en")
 
 		script(type='text/javascript').
 			$(function(){
-				$('.wiki-item').click(function(){
+				// loads (readme|index) page
+				$.fn.loadPreview = function(){
 					$this = $(this);
 					var name = $this.data('name');
 					var url = "/preview/" + name;
 					$.get(url).then(function(html){
 							$('.preview').html(html);
 					});
+				};
+				// load preview on click
+				$('.wiki-item').click(function(){
+					$(this).loadPreview();
 				});
+				// load preview of first wiki
+				var first = $('.wiki-item').first();
+				if (first.length) first.loadPreview();
 			});
