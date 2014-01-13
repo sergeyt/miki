@@ -1,6 +1,7 @@
 path = require 'path'
 express = require 'express'
 populateWikis = require './wikis'
+pageHandler = require './pageHandler'
 
 root = path.dirname __dirname
 
@@ -22,12 +23,22 @@ app.configure ->
 	# static content
 	app.use '/public', express.static root + '/public'
 
-# handlers
+# http handlers
 app.get '/', (req, res) ->
 	res.render 'index', {wikis: populateWikis()}
 
 # wiki page handler
-app.get /\/wiki\/.+/, (req, res) ->
+app.get /\/wiki\/.+/, (req, res, next) ->
+	# remove prefix so need to handle it in page handler
+	page = req.path.replace /\/wiki\//, ''
+	pageHandler page, (err, html) ->
+		# todo send error
+		return next() if err or not html
+		res.send html
+
+# error handler
+app.use (req, res) ->
+	res.send 404, 'Sorry, cant find that!'
 
 # now run server
 port = app.get 'port'

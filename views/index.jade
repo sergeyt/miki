@@ -11,7 +11,7 @@ html(lang="en")
 						p.panel-title="Wikis"
 					.panel-body
 						ul.list-group
-							for wiki in wikis
+							each wiki in wikis
 								li.list-group-item
 									a(href=wiki.href)=wiki.name
 			// right panel - wiki preview
