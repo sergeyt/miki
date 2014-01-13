@@ -53,7 +53,6 @@ module.exports = (page, cb) ->
 	# resolve wiki
 	parts = page.split '/'
 	name = parts[0]
-	console.log "wiki: #{name}"
 	wiki = _.find wikis(), (it) -> it.name == name
 	return cb "unable to resolve wiki #{name}", null if not wiki
 
