@@ -13,15 +13,14 @@ app.set 'host', 'http://localhost:' + app.get('port')
 app.set 'view engine', 'jade'
 app.set 'views', root + '/views'
 
-app.configure ->
-	# config middleware
-	app.use(express.logger({ format: 'dev' }))
-	app.use(express.compress())
-	app.use(express.methodOverride())
-	app.use(express.cookieParser())
-	app.use(express.bodyParser())
-	# static content
-	app.use '/public', express.static root + '/public'
+# config middleware
+app.use(require('morgan')('dev', {}))
+app.use(require('compression'))
+app.use(require('method-override'))
+app.use(require('cookie-parser'))
+app.use(require('body-parser'))
+# static content
+app.use '/public', express.static root + '/public'
 
 # http handlers
 app.get '/', (req, res) ->
