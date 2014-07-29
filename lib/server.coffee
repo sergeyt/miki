@@ -22,9 +22,12 @@ app.use(require('body-parser'))
 # static content
 app.use '/public', express.static root + '/public'
 
-# http handlers
-app.get '/', (req, res) ->
+home = (req, res) ->
 	res.render 'index', {wikis: populateWikis()}
+
+# http handlers
+app.get '/', home
+app.get '/index.html', home
 
 # wiki page handler
 app.get /\/wiki\/.+/, (req, res) ->
